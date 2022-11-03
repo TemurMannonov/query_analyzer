@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/joho/godotenv"
@@ -38,8 +37,6 @@ func ParseConfig(path string) Config {
 			Database: conf.GetString("postgres.database"),
 		},
 	}
-
-	fmt.Println(cfg)
 
 	return cfg
 }

@@ -48,11 +48,12 @@ jobs:
       run: make migrateup
 
     - name: Test
+      run: make test
       env:
-        HTTP_PORT: :8000
         POSTGRES_USER: postgres
         POSTGRES_PASSWORD: postgres
         POSTGRES_DB: postgres
         POSTGRES_HOST: localhost
         POSTGRES_PORT: 5432
-      run: make test
+        HTTP_PORT: ':8000'
+      
