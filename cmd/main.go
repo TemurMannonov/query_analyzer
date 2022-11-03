@@ -13,7 +13,7 @@ import (
 )
 
 func main() {
-	cfg := config.ParseConfig()
+	cfg := config.ParseConfig(".")
 
 	psqlUrl := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
 		cfg.Postgres.Host,
@@ -32,7 +32,7 @@ func main() {
 
 	apiServer := api.NewServer(&cfg, strg)
 
-	err = apiServer.Start(cfg.HttpPort)
+	err = apiServer.Router.Listen(cfg.HttpPort)
 	if err != nil {
 		log.Fatalf("failed to run server: %v", err)
 	}

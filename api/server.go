@@ -14,7 +14,7 @@ import (
 type Server struct {
 	cfg     *config.Config
 	storage storage.DBRepositoryI
-	router  *fiber.App
+	Router  *fiber.App
 }
 
 // @title Swagger Database Query API
@@ -37,12 +37,7 @@ func (server *Server) setupRouter() {
 	app.Get("/swagger/*", fiberSwagger.WrapHandler)
 	app.Get("/queries", server.GetQueries)
 
-	server.router = app
-}
-
-// Start runs the HTTP server on a specific address.
-func (server *Server) Start(address string) error {
-	return server.router.Listen(address)
+	server.Router = app
 }
 
 func errorResponse(err error) models.ResponseError {

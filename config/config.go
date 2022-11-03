@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/joho/godotenv"
@@ -20,8 +21,8 @@ type PostgresConfig struct {
 	Database string
 }
 
-func ParseConfig() Config {
-	godotenv.Load() // load .env file if it exists
+func ParseConfig(path string) Config {
+	godotenv.Load(path + "/.env") // load .env file if it exists
 
 	conf := viper.New()
 	conf.AutomaticEnv()
@@ -37,6 +38,8 @@ func ParseConfig() Config {
 			Database: conf.GetString("postgres.database"),
 		},
 	}
+
+	fmt.Println(cfg)
 
 	return cfg
 }

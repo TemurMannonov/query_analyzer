@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -54,13 +55,62 @@ func TestGetQueries(t *testing.T) {
 						Limit:      10,
 						Page:       1,
 						Type:       "select",
-						SortByTime: "asc"}).
-					Times(1).
-					Return(&resp, nil)
+						SortByTime: "asc",
+					}).Times(1).Return(&resp, nil)
 			},
 			checkResponse: func(t *testing.T, response *http.Response) {
 				require.Equal(t, http.StatusOK, response.StatusCode)
 				requireBodyMatch(t, response.Body, &resp)
+			},
+		},
+		{
+			name:  "with incorrect type",
+			query: "?limit=10&page=1&type=alter",
+			buildStubs: func(strg *mockdb.MockDBRepositoryI) {
+				strg.EXPECT().GetList(gomock.Any()).Times(0)
+			},
+			checkResponse: func(t *testing.T, response *http.Response) {
+				require.Equal(t, http.StatusBadRequest, response.StatusCode)
+			},
+		},
+		{
+			name:  "with incorrect sort",
+			query: "?limit=10&page=1&sort_by_time=ascending",
+			buildStubs: func(strg *mockdb.MockDBRepositoryI) {
+				strg.EXPECT().GetList(gomock.Any()).Times(0)
+			},
+			checkResponse: func(t *testing.T, response *http.Response) {
+				require.Equal(t, http.StatusBadRequest, response.StatusCode)
+			},
+		},
+		{
+			name:  "with incorrect limit",
+			query: "?limit=a&page=1",
+			buildStubs: func(strg *mockdb.MockDBRepositoryI) {
+				strg.EXPECT().GetList(gomock.Any()).Times(0)
+			},
+			checkResponse: func(t *testing.T, response *http.Response) {
+				require.Equal(t, http.StatusBadRequest, response.StatusCode)
+			},
+		},
+		{
+			name:  "with incorrect page",
+			query: "?limit=10&page=1a",
+			buildStubs: func(strg *mockdb.MockDBRepositoryI) {
+				strg.EXPECT().GetList(gomock.Any()).Times(0)
+			},
+			checkResponse: func(t *testing.T, response *http.Response) {
+				require.Equal(t, http.StatusBadRequest, response.StatusCode)
+			},
+		},
+		{
+			name:  "internal server error",
+			query: "?limit=10&page=1",
+			buildStubs: func(strg *mockdb.MockDBRepositoryI) {
+				strg.EXPECT().GetList(gomock.Any()).Times(1).Return(nil, errors.New("db error"))
+			},
+			checkResponse: func(t *testing.T, response *http.Response) {
+				require.Equal(t, http.StatusInternalServerError, response.StatusCode)
 			},
 		},
 	}
@@ -82,7 +132,7 @@ func TestGetQueries(t *testing.T) {
 			request, err := http.NewRequest(http.MethodGet, url, nil)
 			require.NoError(t, err)
 
-			resp, err := server.router.Test(request, 3)
+			resp, err := server.Router.Test(request, 3)
 			assert.NoError(t, err)
 			tc.checkResponse(t, resp)
 		})

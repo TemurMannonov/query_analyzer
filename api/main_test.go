@@ -9,7 +9,7 @@ import (
 )
 
 func newTestServer(t *testing.T, strg storage.DBRepositoryI) *Server {
-	cfg := config.ParseConfig()
+	cfg := config.ParseConfig(".")
 
 	server := NewServer(&cfg, strg)
 
