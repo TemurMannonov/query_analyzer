@@ -2,25 +2,16 @@
 
 Swagger documentation (http://localhost:8000/swagger/index.html)
 
-### Init database
-Create .env file or add environment variables
- - HTTP_PORT=:8000
- - POSTGRES_HOST=localhost
- - POSTGRES_PORT=5432
- - POSTGRES_USER=postgres
- - POSTGRES_PASSWORD=postgres
- - POSTGRES_DATABASE=postgres
-
-Run these commands before running application:
-```bash
-docker compose up -d
-make migrateup
-```
 
 ### Usage
-Run application
+Type this command to run application. It will run application with postgresql database
 ```bash
-go run cmd/main.go 
+make local
+```
+
+Type this command to stop application.
+```bash
+make local-down
 ```
 
 Run test

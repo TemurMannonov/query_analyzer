@@ -44,23 +44,23 @@ const docTemplate = `{
                     },
                     {
                         "enum": [
+                            "asc",
+                            "desc"
+                        ],
+                        "type": "string",
+                        "default": "desc",
+                        "name": "sort_by_time",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
                             "select",
                             "insert",
                             "update",
                             "delete"
                         ],
                         "type": "string",
-                        "name": "query_type",
-                        "in": "query"
-                    },
-                    {
-                        "enum": [
-                            "asc",
-                            "desc"
-                        ],
-                        "type": "string",
-                        "default": "asc",
-                        "name": "sort_by_time_spent",
+                        "name": "type",
                         "in": "query"
                     }
                 ],

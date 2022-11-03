@@ -50,20 +50,20 @@ paths:
         in: query
         name: page
         type: integer
+      - default: desc
+        enum:
+        - asc
+        - desc
+        in: query
+        name: sort_by_time
+        type: string
       - enum:
         - select
         - insert
         - update
         - delete
         in: query
-        name: query_type
-        type: string
-      - default: asc
-        enum:
-        - asc
-        - desc
-        in: query
-        name: sort_by_time_spent
+        name: type
         type: string
       produces:
       - application/json
