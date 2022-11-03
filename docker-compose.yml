@@ -5,7 +5,7 @@ services:
     image: postgres:14-alpine
     volumes:
       - pgdata:/var/lib/postgresql/data
-    run: postgres -c shared_preload_libraries=pg_stat_statements -c pg_stat_statements.track=all -c max_connections=200
+    command: postgres -c shared_preload_libraries=pg_stat_statements -c pg_stat_statements.track=all -c max_connections=200
     ports:
       - "5432:5432"
     environment:
