@@ -16,4 +16,10 @@ test:
 mock:
 	mockgen -package mockdb -destination storage/mock/db_repository.go github.com/TemurMannonov/query_analyzer/storage DBRepositoryI
 
-.PHONY: swagger-generate migrateup migratedown
+local:
+	docker compose up -d
+
+local-down:
+	docker compose down
+
+.PHONY: swagger-generate migrateup migratedown mock test local local-down
