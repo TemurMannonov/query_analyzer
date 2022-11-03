@@ -1,0 +1,131 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is a api documentation for getting database queries.",
+        "title": "Swagger Database Query API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "paths": {
+        "/queries": {
+            "get": {
+                "description": "API for get  queries",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "query"
+                ],
+                "summary": "Get queries",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 10,
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "select",
+                            "insert",
+                            "update",
+                            "delete"
+                        ],
+                        "type": "string",
+                        "name": "query_type",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "asc",
+                            "desc"
+                        ],
+                        "type": "string",
+                        "default": "asc",
+                        "name": "sort_by_time_spent",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.GetQueriesResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.GetQueriesResponse": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "queries": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Query"
+                    }
+                }
+            }
+        },
+        "models.Query": {
+            "type": "object",
+            "properties": {
+                "calls": {
+                    "type": "integer"
+                },
+                "max_exec_time": {
+                    "type": "number"
+                },
+                "mean_exec_time": {
+                    "type": "number"
+                },
+                "min_exec_time": {
+                    "type": "number"
+                },
+                "query": {
+                    "type": "string"
+                },
+                "queryid": {
+                    "type": "integer"
+                },
+                "total_exec_time": {
+                    "type": "number"
+                }
+            }
+        },
+        "models.ResponseError": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
