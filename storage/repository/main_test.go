@@ -23,7 +23,7 @@ var (
 
 func TestMain(m *testing.M) {
 	cfg = config.ParseConfig("../..")
-	fmt.Println("repo test", cfg)
+
 	conStr := fmt.Sprintf("host=%s port=%v user=%s password=%s dbname=%s sslmode=disable",
 		cfg.Postgres.Host,
 		cfg.Postgres.Port,
