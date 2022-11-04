@@ -1,4 +1,4 @@
-package repository_test
+package repository
 
 import (
 	"fmt"
@@ -6,23 +6,19 @@ import (
 	"os"
 	"testing"
 
+	"github.com/TemurMannonov/query_analyzer/api"
 	"github.com/TemurMannonov/query_analyzer/config"
-	"github.com/TemurMannonov/query_analyzer/storage"
-	"github.com/TemurMannonov/query_analyzer/storage/repository"
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 )
 
 var (
-	postgresConn *sqlx.DB
-	err          error
-	cfg          config.Config
-	strg         storage.DBRepositoryI
+	strg api.DBRepositoryI
 )
 
 func TestMain(m *testing.M) {
-	cfg = config.ParseConfig("../..")
+	cfg := config.ParseConfig("../..")
 
 	conStr := fmt.Sprintf("host=%s port=%v user=%s password=%s dbname=%s sslmode=disable",
 		cfg.Postgres.Host,
@@ -32,13 +28,12 @@ func TestMain(m *testing.M) {
 		cfg.Postgres.Database,
 	)
 
-	postgresConn, err = sqlx.Open("postgres", conStr)
-
+	postgresConn, err := sqlx.Open("postgres", conStr)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	strg = repository.NewDBRepository(postgresConn)
+	strg = NewDBRepository(postgresConn)
 
 	os.Exit(m.Run())
 }

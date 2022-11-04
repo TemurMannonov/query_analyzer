@@ -14,7 +14,7 @@ test:
 	go test -v -cover ./...
 
 mock:
-	mockgen -package mockdb -destination storage/mock/db_repository.go github.com/TemurMannonov/query_analyzer/storage DBRepositoryI
+	mockgen -package mockdb -destination storage/mock/db_repository.go github.com/TemurMannonov/query_analyzer/api DBRepositoryI
 
 local:
 	docker compose up -d

@@ -8,16 +8,20 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/TemurMannonov/query_analyzer/models"
+	"github.com/TemurMannonov/query_analyzer/api/models"
+	"github.com/TemurMannonov/query_analyzer/config"
 	mockdb "github.com/TemurMannonov/query_analyzer/storage/mock"
+	dbModels "github.com/TemurMannonov/query_analyzer/storage/models"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestGetQueries(t *testing.T) {
-	resp := models.GetQueriesResponse{
-		Queries: []*models.Query{
+	cfg := config.ParseConfig(".")
+
+	result := dbModels.GetQueriesResult{
+		Queries: []*dbModels.Query{
 			{
 				QueryID:       123,
 				Query:         "SELECT * FROM blogs",
@@ -51,16 +55,18 @@ func TestGetQueries(t *testing.T) {
 			query: "?limit=10&page=1&type=select&sort_by_time=asc",
 			buildStubs: func(strg *mockdb.MockDBRepositoryI) {
 				strg.EXPECT().
-					GetList(&models.GetQueriesRequest{
+					GetList(&dbModels.GetQueriesParams{
 						Limit:      10,
 						Page:       1,
 						Type:       "select",
 						SortByTime: "asc",
-					}).Times(1).Return(&resp, nil)
+					}).Times(1).Return(&result, nil)
 			},
 			checkResponse: func(t *testing.T, response *http.Response) {
 				require.Equal(t, http.StatusOK, response.StatusCode)
-				requireBodyMatch(t, response.Body, &resp)
+
+				resp := parseQueriesResult(&result)
+				requireBodyMatch(t, response.Body, resp)
 			},
 		},
 		{
@@ -115,9 +121,7 @@ func TestGetQueries(t *testing.T) {
 		},
 	}
 
-	for i := range testCases {
-		tc := testCases[i]
-
+	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
@@ -125,10 +129,10 @@ func TestGetQueries(t *testing.T) {
 			strg := mockdb.NewMockDBRepositoryI(ctrl)
 			tc.buildStubs(strg)
 
-			server := newTestServer(t, strg)
+			server := NewServer(&cfg, strg)
 
 			url := fmt.Sprintf("/queries%s", tc.query)
-			fmt.Println(url)
+
 			request, err := http.NewRequest(http.MethodGet, url, nil)
 			require.NoError(t, err)
 

@@ -1,8 +1,6 @@
 package config
 
 import (
-	"strings"
-
 	"github.com/joho/godotenv"
 	"github.com/spf13/viper"
 )
@@ -25,16 +23,15 @@ func ParseConfig(path string) Config {
 
 	conf := viper.New()
 	conf.AutomaticEnv()
-	conf.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
 	cfg := Config{
-		HttpPort: conf.GetString("http.port"),
+		HttpPort: conf.GetString("HTTP_PORT"),
 		Postgres: PostgresConfig{
-			Host:     conf.GetString("postgres.host"),
-			Port:     conf.GetString("postgres.port"),
-			User:     conf.GetString("postgres.user"),
-			Password: conf.GetString("postgres.password"),
-			Database: conf.GetString("postgres.database"),
+			Host:     conf.GetString("POSTGRES_HOST"),
+			Port:     conf.GetString("POSTGRES_PORT"),
+			User:     conf.GetString("POSTGRES_USER"),
+			Password: conf.GetString("POSTGRES_PASSWORD"),
+			Database: conf.GetString("POSTGRES_DATABASE"),
 		},
 	}
 

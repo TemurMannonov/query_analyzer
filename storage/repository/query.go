@@ -3,8 +3,8 @@ package repository
 import (
 	"fmt"
 
-	"github.com/TemurMannonov/query_analyzer/models"
-	"github.com/TemurMannonov/query_analyzer/storage"
+	"github.com/TemurMannonov/query_analyzer/api"
+	"github.com/TemurMannonov/query_analyzer/storage/models"
 
 	"github.com/jmoiron/sqlx"
 )
@@ -13,14 +13,14 @@ type queryRepo struct {
 	db *sqlx.DB
 }
 
-func NewDBRepository(db *sqlx.DB) storage.DBRepositoryI {
+func NewDBRepository(db *sqlx.DB) api.DBRepositoryI {
 	return &queryRepo{
 		db: db,
 	}
 }
 
-func (b *queryRepo) GetList(req *models.GetQueriesRequest) (*models.GetQueriesResponse, error) {
-	result := models.GetQueriesResponse{
+func (b *queryRepo) GetList(req *models.GetQueriesParams) (*models.GetQueriesResult, error) {
+	result := models.GetQueriesResult{
 		Queries: make([]*models.Query, 0),
 	}
 

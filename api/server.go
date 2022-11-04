@@ -1,9 +1,9 @@
 package api
 
 import (
+	"github.com/TemurMannonov/query_analyzer/api/models"
 	"github.com/TemurMannonov/query_analyzer/config"
-	"github.com/TemurMannonov/query_analyzer/models"
-	"github.com/TemurMannonov/query_analyzer/storage"
+	dbModels "github.com/TemurMannonov/query_analyzer/storage/models"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 
@@ -11,16 +11,20 @@ import (
 	fiberSwagger "github.com/swaggo/fiber-swagger"
 )
 
+type DBRepositoryI interface {
+	GetList(request *dbModels.GetQueriesParams) (*dbModels.GetQueriesResult, error)
+}
+
 type Server struct {
 	cfg     *config.Config
-	storage storage.DBRepositoryI
+	storage DBRepositoryI
 	Router  *fiber.App
 }
 
 // @title Swagger Database Query API
 // @version 1.0
 // @description This is a api documentation for getting database queries.
-func NewServer(cfg *config.Config, strg storage.DBRepositoryI) *Server {
+func NewServer(cfg *config.Config, strg DBRepositoryI) *Server {
 	server := &Server{
 		cfg:     cfg,
 		storage: strg,

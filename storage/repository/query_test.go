@@ -1,27 +1,27 @@
-package repository_test
+package repository
 
 import (
 	"testing"
 
-	"github.com/TemurMannonov/query_analyzer/models"
+	"github.com/TemurMannonov/query_analyzer/storage/models"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestQuery_GetList(t *testing.T) {
 	testCases := []struct {
 		name  string
-		param *models.GetQueriesRequest
+		param *models.GetQueriesParams
 	}{
 		{
 			name: "without filter and sort",
-			param: &models.GetQueriesRequest{
+			param: &models.GetQueriesParams{
 				Limit: 10,
 				Page:  1,
 			},
 		},
 		{
 			name: "sort by time desc",
-			param: &models.GetQueriesRequest{
+			param: &models.GetQueriesParams{
 				Limit:      10,
 				Page:       1,
 				SortByTime: "desc",
@@ -29,7 +29,7 @@ func TestQuery_GetList(t *testing.T) {
 		},
 		{
 			name: "filter by type",
-			param: &models.GetQueriesRequest{
+			param: &models.GetQueriesParams{
 				Limit: 10,
 				Page:  1,
 				Type:  "select",
@@ -37,7 +37,7 @@ func TestQuery_GetList(t *testing.T) {
 		},
 		{
 			name: "filter and sorting",
-			param: &models.GetQueriesRequest{
+			param: &models.GetQueriesParams{
 				Limit:      10,
 				Page:       1,
 				SortByTime: "asc",

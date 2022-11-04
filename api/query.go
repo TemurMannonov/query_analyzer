@@ -5,7 +5,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/TemurMannonov/query_analyzer/models"
+	"github.com/TemurMannonov/query_analyzer/api/models"
+	dbModels "github.com/TemurMannonov/query_analyzer/storage/models"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -20,18 +21,45 @@ import (
 // @Failure 400 {object} models.ResponseError
 // @Failure 500 {object} models.ResponseError
 func (h *Server) GetQueries(c *fiber.Ctx) error {
-
-	params, err := validateQueriesRequest(c)
+	req, err := validateQueriesRequest(c)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(errorResponse(err))
 	}
 
-	resp, err := h.storage.GetList(params)
+	result, err := h.storage.GetList(&dbModels.GetQueriesParams{
+		Limit:      req.Limit,
+		Page:       req.Page,
+		SortByTime: req.SortByTime,
+		Type:       req.Type,
+	})
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(errorResponse(err))
 	}
 
-	return c.JSON(resp)
+	response := parseQueriesResult(result)
+
+	return c.Status(fiber.StatusOK).JSON(response)
+}
+
+func parseQueriesResult(result *dbModels.GetQueriesResult) *models.GetQueriesResponse {
+	response := models.GetQueriesResponse{
+		Count:   result.Count,
+		Queries: make([]*models.Query, 0),
+	}
+
+	for _, query := range result.Queries {
+		response.Queries = append(response.Queries, &models.Query{
+			QueryID:       query.QueryID,
+			Query:         query.Query,
+			Calls:         query.Calls,
+			TotalExecTime: query.TotalExecTime,
+			MinExecTime:   query.MinExecTime,
+			MaxExecTime:   query.MaxExecTime,
+			MeanExecTime:  query.MeanExecTime,
+		})
+	}
+
+	return &response
 }
 
 func validateQueriesRequest(c *fiber.Ctx) (*models.GetQueriesRequest, error) {
